@@ -17,7 +17,7 @@ LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 
 int tempoCronometro; // Tempo que vai demorar para cair ração
 int qtdRefeicoes = 1; // Controla a quantidade de refeições diárias no menu
-int qtdRacao = 30; // Controla a quantidade de ração diária no menu
+int qtdRacao = 10; // Controla a quantidade de ração diária no menu
 int racaoPorRefeicao;
 int rotacoesMotor; // Quantas vezes o motor roda a cada refeição
 int tela = 1; // Variável para controlar a mudança de tela no menu
@@ -84,14 +84,14 @@ void loop() {
         L_botao_MENOS = digitalRead(botao_MENOS);
 
         if (L_botao_MAIS) {
-            qtdRacao += 30;
+            qtdRacao += 10;
             delay(500);
         }
         if (L_botao_MENOS) {
-            if(qtdRacao > 30){
-              qtdRacao -= 30;
+            if(qtdRacao > 10){
+              qtdRacao -= 10;
               delay(500);
-              if (qtdRacao - 30 < 100){ //PRA NAO FICAR UM ZERO A MAIS QUANDO FOR DIMINUIR DE UM NUMERO MAIOR Q 100 PRA UM MENOR
+              if (qtdRacao - 10 < 100){ //PRA NAO FICAR UM ZERO A MAIS QUANDO FOR DIMINUIR DE UM NUMERO MAIOR Q 100 PRA UM MENOR
                 lcd.setCursor(2, 1);
                 lcd.print(" ");
               }
