@@ -2,6 +2,7 @@
 - INCLUIR POSSIBILIDADE DE PRECISAR INCLUIR MINUTOS E SEGUNDOS NO CÁLCULO DO TEMPO DO CRONOMETRO
 porém, talvez não seja necessário a quantidade de refeições ser tão flexível, vamos perguntar aos AUs se realmente precisa ou 
 se podemos só colocar as opções de duas ou quatro refeições diárias, pra facilitar os calculos
+e talvez seja trabalho desnecessário pq só não dá tempo fechado quando tiver numero de refeicoes nao divisores de 24
 */
 
 #include <LiquidCrystal.h>
