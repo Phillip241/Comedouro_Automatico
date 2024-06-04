@@ -1,5 +1,7 @@
 /* O QUE AINDA PRECISA SER FEITO NO CÓDIGO:
 - INCLUIR POSSIBILIDADE DE PRECISAR INCLUIR MINUTOS E SEGUNDOS NO CÁLCULO DO TEMPO DO CRONOMETRO
+porém, talvez não seja necessário a quantidade de refeições ser tão flexível, vamos perguntar aos AUs se realmente precisa ou 
+se podemos só colocar as opções de duas ou quatro refeições diárias, pra facilitar os calculos
 */
 
 #include <LiquidCrystal.h>
