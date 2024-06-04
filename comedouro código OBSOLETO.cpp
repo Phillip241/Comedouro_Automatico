@@ -1,3 +1,4 @@
+//NÃO, ESSE CÓDIGO NÃO TA OBSOLETO, EU SÓ NÃO SEI RENOMEAR O ARQUIVO (PFV DAMASCENO AJUDA COM ISSO)
 #include <LiquidCrystal.h>
 #include <Servo.h>
 #include <EEPROM.h>
