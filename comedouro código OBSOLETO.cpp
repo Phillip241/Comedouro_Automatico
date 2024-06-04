@@ -27,6 +27,12 @@ bool L_botao_ENTER; // Verifica se o botão enter está apertado
 int ligado = 0; // Verifica se o comedouro foi ligado
 int sentido = 1; // Variável para mudar o sentido do motor
 
+void limparEEPROM() {
+    for (int i = 0; i < 2; i++) {
+        EEPROM.write(i, 0);
+    }
+}
+
 int lerPosicaoEEPROM() {
     int posicao;
     EEPROM.get(posicaoEEPROM, posicao);
@@ -39,19 +45,21 @@ void gravarPosicaoEEPROM(int posicao) {
 
 void setup() {
     Servo1.attach(motor);
-    
+
+    limparEEPROM(); // Limpa a EEPROM ao iniciar
+
     int posicaoInicial = lerPosicaoEEPROM();
     Servo1.write(posicaoInicial);
 
     pinMode(botao_MAIS, INPUT_PULLUP);
     pinMode(botao_ENTER, INPUT_PULLUP);
     pinMode(botaoligar, INPUT);
-    
+
     // Primeiros comandos do LCD (tela de iniciação, sempre que o programa for reiniciado isso aparece)
     lcd.begin(16, 2);
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(F("Comedouro  "));
+    lcd.print(F("Comedouro"));
     delay(3000);
     lcd.clear();
 }
@@ -71,7 +79,7 @@ void loop() {
             lcd.setCursor(0, 1);
             lcd.print(qtdRacao);
             lcd.setCursor(4, 1);
-            lcd.print(F("GRAMAS      "));
+            lcd.print(F("GRAMAS"));
 
             // O que cada botão faz nessa seção
             L_botao_MAIS = digitalRead(botao_MAIS); // Verifica se o botão mais está apertado
@@ -114,9 +122,9 @@ void loop() {
         } else if (tela == 3) {
             // Aqui é padrão, vai contar o tempo até rodar o motor para cair ração
             lcd.setCursor(0, 0);
-            lcd.print("COMIDA          ");
+            lcd.print(F("COMIDA"));
             lcd.setCursor(0, 1);
-            lcd.print("EM: ");
+            lcd.print(F("EM: "));
             lcd.setCursor(6, 1);
             lcd.print(":");
             lcd.setCursor(9, 1);
@@ -136,7 +144,7 @@ void rodarMotor() { // ESSA FUNÇÃO RODA O MOTOR
         Servo1.write(0);
         sentido--;
     }
-    //gravarPosicaoEEPROM(Servo1.read()); // Grava a posição atual do servo
+    gravarPosicaoEEPROM(Servo1.read()); // Grava a posição atual do servo
 }
 
 void cronometro(int hora, int min, int sec) {
