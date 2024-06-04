@@ -1,4 +1,7 @@
-//NÃO, ESSE CÓDIGO NÃO TA OBSOLETO, EU SÓ NÃO SEI RENOMEAR O ARQUIVO (PFV DAMASCENO AJUDA COM ISSO)
+/* O QUE AINDA PRECISA SER FEITO NO CÓDIGO:
+- INCLUIR POSSIBILIDADE DE PRECISAR INCLUIR MINUTOS E SEGUNDOS NO CÁLCULO DO TEMPO DO CRONOMETRO
+*/
+
 #include <LiquidCrystal.h>
 #include <Servo.h>
 #include <EEPROM.h>
@@ -17,7 +20,6 @@ int racaoPorRefeicao;
 int rotacoesMotor; // Quantas vezes o motor roda a cada refeição
 int tela = 1; // Variável para controlar a mudança de tela no menu
 int S, M, H; // Variáveis do cronômetro
-int situacaoBotaoligar = 0; // Verifica se o botão ligar foi apertado
 const int posicaoEEPROM = 0; // Armazena a posição do servo para não se mexer ao reiniciar
 
 Servo Servo1;
