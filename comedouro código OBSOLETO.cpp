@@ -26,7 +26,7 @@ bool L_botao_MAIS; // Verifica se o botão mais está apertado
 bool L_botao_ENTER; // Verifica se o botão enter está apertado
 
 int ligado = 0; // Verifica se o comedouro foi ligado
-int sentido = 1; // Variável para mudar o sentido do motor
+int sentido = 0; // Variável para mudar o sentido do motor
 
 void limparEEPROM() {
     for (int i = 0; i < 2; i++) {
@@ -41,13 +41,13 @@ int lerPosicaoEEPROM() {
 }
 
 void gravarPosicaoEEPROM(int posicao) {
-    EEPROM.put(posicaoEEPROM, posicao);
+    EEPROM.update(posicaoEEPROM, posicao);
 }
 
 void setup() {
     Servo1.attach(motor);
 
-    limparEEPROM(); // Limpa a EEPROM ao iniciar
+    
 
     int posicaoInicial = lerPosicaoEEPROM();
     Servo1.write(posicaoInicial);
@@ -117,6 +117,9 @@ void loop() {
                 tela++;
                 tempoCronometro = 24 / qtdRefeicoes; // Tempo até cair ração
                 racaoPorRefeicao = qtdRacao / qtdRefeicoes;
+                for(int i=0; racaoPorRefeicao%10 == 0; i++){
+                  ++racaoPorRefeicao;
+                }
                 rotacoesMotor = racaoPorRefeicao / 10;
                 delay(500);
             }
@@ -136,15 +139,19 @@ void loop() {
 }
 
 void rodarMotor() { // ESSA FUNÇÃO RODA O MOTOR
-    if (sentido == 0) {
-        delay(1000);
-        Servo1.write(90);
-        sentido++;
-    } else {
-        delay(1000);
-        Servo1.write(0);
-        sentido--;
+    for (int i = 1; i <= rotacoesMotor; i++){
+      
+      if (sentido == 0) {
+          delay(1000);
+         Servo1.write(90);
+          sentido++;
+      } else {
+          delay(1000);
+          Servo1.write(0);
+          sentido--;
+      }
     }
+    limparEEPROM();
     gravarPosicaoEEPROM(Servo1.read()); // Grava a posição atual do servo
 }
 
@@ -201,8 +208,6 @@ void cronometro(int hora, int min, int sec) {
         lcd.print(":");
     }
     if ((H == 0) && (M == 0) && (S == 0)) {
-        for (int i = 1; i <= rotacoesMotor; i++) {
-            rodarMotor();
-        }
+      rodarMotor();   
     }
 }
