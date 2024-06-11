@@ -16,7 +16,7 @@ e talvez seja trabalho desnecessário pq só não dá tempo fechado quando tiver
 
 LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
 
-int tempoCronometro; // Tempo que vai demorar para cair ração
+double tempoHora, tempoMinuto, tempoSegundo; // Tempo que vai demorar para cair ração
 int qtdRefeicoes = 1; // Controla a quantidade de refeições diárias no menu
 int qtdRacao = 10; // Controla a quantidade de ração diária no menu
 int racaoPorRefeicao;
@@ -130,7 +130,9 @@ void loop() {
         }
         if (L_botao_ENTER) {
             tela++;
-            tempoCronometro = 24 / qtdRefeicoes; // Tempo até cair ração
+            tempoHora = 24 / (double)qtdRefeicoes; // Tempo até cair ração
+            tempoMinuto = (tempoHora - (int)tempoHora) * 60;
+            tempoSegundo = (tempoMinuto - (int)tempoMinuto) * 60;
             racaoPorRefeicao = qtdRacao / qtdRefeicoes;
             for (int i = 0; racaoPorRefeicao % 10 == 0; i++) {
                 ++racaoPorRefeicao;
@@ -148,7 +150,7 @@ void loop() {
         lcd.print(":");
         lcd.setCursor(9, 1);
         lcd.print(":");
-        cronometro(0, 0, tempoCronometro); // A variável está em segundos por questão de teste
+        cronometro(tempoHora, tempoMinuto, tempoSegundo); // A variável está em segundos por questão de teste
     }
 }
 
