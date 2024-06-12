@@ -1,10 +1,3 @@
-/* O QUE AINDA PRECISA SER FEITO NO CÓDIGO:
-- INCLUIR POSSIBILIDADE DE PRECISAR INCLUIR MINUTOS E SEGUNDOS NO CÁLCULO DO TEMPO DO CRONOMETRO
-porém, talvez não seja necessário a quantidade de refeições ser tão flexível, vamos perguntar aos AUs se realmente precisa ou 
-se podemos só colocar as opções de duas ou quatro refeições diárias, pra facilitar os calculos
-e talvez seja trabalho desnecessário pq só não dá tempo fechado quando tiver numero de refeicoes nao divisores de 24
-*/
-
 #include <LiquidCrystal.h>
 #include <Servo.h>
 #include <EEPROM.h>
@@ -15,6 +8,7 @@ e talvez seja trabalho desnecessário pq só não dá tempo fechado quando tiver
 #define botao_ENTER 12
 
 LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
+Servo Servo1;
 
 double tempoHora, tempoMinuto, tempoSegundo; // Tempo que vai demorar para cair ração
 int qtdRefeicoes = 1; // Controla a quantidade de refeições diárias no menu
@@ -23,16 +17,14 @@ int racaoPorRefeicao;
 int rotacoesMotor; // Quantas vezes o motor roda a cada refeição
 int tela = 1; // Variável para controlar a mudança de tela no menu
 int S, M, H; // Variáveis do cronômetro
+int ligado = 0; // Verifica se o comedouro foi ligado
+int sentido = 0; // Variável para mudar o sentido do motor
 const int posicaoEEPROM = 0; // Armazena a posição do servo para não se mexer ao reiniciar
-
-Servo Servo1;
 
 bool L_botao_MAIS; // Verifica se o botão mais está apertado
 bool L_botao_ENTER; // Verifica se o botão enter está apertado
 bool L_botao_MENOS; // Verifica se o botão enter está apertado
 
-int ligado = 0; // Verifica se o comedouro foi ligado
-int sentido = 0; // Variável para mudar o sentido do motor
 
 void limparEEPROM() {
     for (int i = 0; i < 2; i++) {
@@ -134,6 +126,7 @@ void loop() {
                 ++racaoPorRefeicao;
             }
             rotacoesMotor = racaoPorRefeicao / 10;
+          	rodarMotor();
             lcd.clear();
           
         }
