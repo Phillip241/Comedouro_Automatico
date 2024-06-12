@@ -17,8 +17,7 @@ int racaoPorRefeicao;
 int rotacoesMotor; // Quantas vezes o motor roda a cada refeição
 int tela = 1; // Variável para controlar a mudança de tela no menu
 int S, M, H; // Variáveis do cronômetro
-int ligado = 0; // Verifica se o comedouro foi ligado
-int sentido = 0; // Variável para mudar o sentido do motor
+bool sentido = true; // Variável para mudar o sentido do motor
 const int posicaoEEPROM = 0; // Armazena a posição do servo para não se mexer ao reiniciar
 
 bool L_botao_MAIS; // Verifica se o botão mais está apertado
@@ -146,14 +145,18 @@ void loop() {
 
 void rodarMotor() { // ESSA FUNÇÃO RODA O MOTOR
     for (int i = 1; i <= rotacoesMotor; i++) {
-        if (sentido == 0) {
+        if (sentido) {
             delay(1000);
-            Servo1.write(90);
-            sentido++;
+            Servo1.write(Servo1.read()+90);
         } else {
             delay(1000);
-            Servo1.write(0);
-            sentido--;
+            Servo1.write(Servo1.read()-90);
+        }
+        if(Servo1.read() == 180){
+            sentido = false;
+        }
+        else if(Servo1.read() == 0){
+            sentido = true;
         }
     }
     limparEEPROM();
