@@ -76,8 +76,7 @@ void loop() {
         lcd.print(F("RACAO DIARIA:   "));
         lcd.setCursor(0, 1);
         lcd.print(qtdRacao);
-        lcd.setCursor(4, 1);
-        lcd.print(F("GRAMAS"));
+        lcd.print(F(" GRAMAS"));
 
         // O que cada botão faz nessa seção
         L_botao_MAIS = digitalRead(botao_MAIS); // Verifica se o botão mais está apertado
@@ -92,14 +91,11 @@ void loop() {
             if(qtdRacao > 10){
               qtdRacao -= 10;
               delay(500);
-              if (qtdRacao - 10 < 100){ //PRA NAO FICAR UM ZERO A MAIS QUANDO FOR DIMINUIR DE UM NUMERO MAIOR Q 100 PRA UM MENOR
-                lcd.setCursor(2, 1);
-                lcd.print(" ");
-              }
             }
         }
         if (L_botao_ENTER) {
-            tela++;
+          lcd.clear();  
+          tela++;
             delay(500);
         }
     } else if (tela == 2) {
@@ -138,7 +134,8 @@ void loop() {
                 ++racaoPorRefeicao;
             }
             rotacoesMotor = racaoPorRefeicao / 10;
-            delay(500);
+            lcd.clear();
+          
         }
     } else if (tela == 3) {
         // Aqui é padrão, vai contar o tempo até rodar o motor para cair ração
