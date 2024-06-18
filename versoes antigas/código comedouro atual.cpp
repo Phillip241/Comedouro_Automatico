@@ -7,7 +7,7 @@
 #define botao_MAIS 13
 #define botao_ENTER 12
 
-LiquidCrystal lcd(7, 6, 5, 4, 3, 2);
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 Servo Servo1;
 
 double tempoHora, tempoMinuto, tempoSegundo; // Tempo que vai demorar para cair ração
