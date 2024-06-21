@@ -4,8 +4,8 @@
 
 #define motor 9
 #define botao_MENOS 11
-#define botao_MAIS 13
-#define botao_ENTER 12
+#define botao_MAIS 10
+#define botao_ENTER 8
 
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 Servo Servo1;
