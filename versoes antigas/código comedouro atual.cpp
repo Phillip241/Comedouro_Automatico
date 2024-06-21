@@ -42,7 +42,13 @@ void gravarPosicaoEEPROM(int posicao) {
 }
 
 void setup() {
-    Servo1.attach(motor);
+  if(Servo1.read() == 180){
+            sentido = false;
+        }
+        else if(Servo1.read() == 0){
+            sentido = true;
+        }  
+  Servo1.attach(motor);
 
     int posicaoInicial = lerPosicaoEEPROM();
     Servo1.write(posicaoInicial);
@@ -144,7 +150,7 @@ void loop() {
 }
 
 void rodarMotor() { // ESSA FUNÇÃO RODA O MOTOR
-    for (int i = 1; i <= rotacoesMotor; i++) {
+    for (int i = 0; i < rotacoesMotor; i++) {
         if (sentido) {
             delay(1000);
             Servo1.write(Servo1.read()+90);
