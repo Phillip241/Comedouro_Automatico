@@ -4,8 +4,8 @@
 
 #define motor 9
 #define botao_MENOS 11
-#define botao_MAIS 13
-#define botao_ENTER 12
+#define botao_MAIS 10
+#define botao_ENTER 8
 
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 Servo Servo1;
@@ -16,17 +16,18 @@ int qtdRacao = 10; // Controla a quantidade de ração diária no menu
 int racaoPorRefeicao;
 int rotacoesMotor; // Quantas vezes o motor roda a cada refeição
 int tela = 1; // Variável para controlar a mudança de tela no menu
-int S, M, H; // Variáveis do cronômetro
-bool sentido = true; // Variável para mudar o sentido do motor
+int S = 0, M = 0, H = 0; // Variáveis do cronômetro
+int ligado = 0; // Verifica se o comedouro foi ligado
+int sentido = 0; // Variável para mudar o sentido do motor
+int countSentido=0;
 const int posicaoEEPROM = 0; // Armazena a posição do servo para não se mexer ao reiniciar
 
 bool L_botao_MAIS; // Verifica se o botão mais está apertado
 bool L_botao_ENTER; // Verifica se o botão enter está apertado
 bool L_botao_MENOS; // Verifica se o botão enter está apertado
 
-
 void limparEEPROM() {
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 6; i++) {
         EEPROM.write(i, 0);
     }
 }
@@ -41,11 +42,33 @@ void gravarPosicaoEEPROM(int posicao) {
     EEPROM.update(posicaoEEPROM, posicao);
 }
 
+int lerSentido() {
+    int sentidoEEPROM;
+    EEPROM.get(posicaoEEPROM + sizeof(int), sentidoEEPROM);
+    return sentidoEEPROM;
+}
+
+void gravarCountSentido(int countSentido) {
+    EEPROM.update(posicaoEEPROM + sizeof(int), countSentido);
+}
+
+int lerCountSentido() {
+    int countSentidoEEPROM;
+    EEPROM.get(posicaoEEPROM + sizeof(int), countSentidoEEPROM);
+    return countSentidoEEPROM;
+}
+
+void gravarSentido(int sentido) {
+    EEPROM.update(posicaoEEPROM + sizeof(int), sentido);
+}
+
 void setup() {
     Servo1.attach(motor);
 
     int posicaoInicial = lerPosicaoEEPROM();
     Servo1.write(posicaoInicial);
+    sentido = lerSentido();
+    countSentido = lerCountSentido();
 
     pinMode(botao_MAIS, INPUT_PULLUP);
     pinMode(botao_ENTER, INPUT_PULLUP);
@@ -79,14 +102,14 @@ void loop() {
             delay(500);
         }
         if (L_botao_MENOS) {
-            if(qtdRacao > 10){
-              qtdRacao -= 10;
-              delay(500);
+            if (qtdRacao > 10) {
+                qtdRacao -= 10;
+                delay(500);
             }
         }
         if (L_botao_ENTER) {
-          lcd.clear();  
-          tela++;
+            lcd.clear();
+            tela++;
             delay(500);
         }
     } else if (tela == 2) {
@@ -110,10 +133,10 @@ void loop() {
             delay(500);
         }
         if (L_botao_MENOS) {
-          if(qtdRefeicoes > 1){
-            qtdRefeicoes--;
-            delay(500);
-          }
+            if (qtdRefeicoes > 1) {
+                qtdRefeicoes--;
+                delay(500);
+            }
         }
         if (L_botao_ENTER) {
             tela++;
@@ -121,13 +144,12 @@ void loop() {
             tempoMinuto = (tempoHora - (int)tempoHora) * 60;
             tempoSegundo = (tempoMinuto - (int)tempoMinuto) * 60;
             racaoPorRefeicao = qtdRacao / qtdRefeicoes;
-            for (int i = 0; racaoPorRefeicao % 10 == 0; i++) {
-                ++racaoPorRefeicao;
+            while (racaoPorRefeicao % 10 != 0) {
+                racaoPorRefeicao++;
             }
             rotacoesMotor = racaoPorRefeicao / 10;
-          	rodarMotor();
+            rodarMotor();
             lcd.clear();
-          
         }
     } else if (tela == 3) {
         // Aqui é padrão, vai contar o tempo até rodar o motor para cair ração
@@ -139,28 +161,41 @@ void loop() {
         lcd.print(":");
         lcd.setCursor(9, 1);
         lcd.print(":");
-        cronometro(tempoHora, tempoMinuto, tempoSegundo); // A variável está em segundos por questão de teste
+        cronometro(0, 0, tempoHora); // A variável está em segundos por questão de teste
     }
 }
 
-void rodarMotor() { // ESSA FUNÇÃO RODA O MOTOR
-    for (int i = 1; i <= rotacoesMotor; i++) {
-        if (sentido) {
-            delay(1000);
-            Servo1.write(Servo1.read()+90);
-        } else {
-            delay(1000);
-            Servo1.write(Servo1.read()-90);
+void rodarMotor() {
+    
+
+    for (int i = 0; i < rotacoesMotor; i++) {
+        delay(1000); // Espera antes de cada rotação
+
+        // Faz incrementos suaves de rotação para evitar movimentos bruscos
+        int increment = 5; // Define um incremento pequeno para mover o servo
+        for (int pos = 0; pos < 90; pos += increment) {
+            if (sentido == 0) {
+                Servo1.write(Servo1.read() + increment); // Gira no sentido horário incrementalmente
+            } else {
+                Servo1.write(Servo1.read() - increment); // Gira no sentido anti-horário incrementalmente
+            }
+            delay(100); // Pausa pequena para garantir movimento suave
         }
-        if(Servo1.read() == 180){
-            sentido = false;
-        }
-        else if(Servo1.read() == 0){
-            sentido = true;
+
+        countSentido++; // Incrementa o contador de rotações
+
+        // Verifica se é hora de alternar o sentido após duas rotações
+        if (countSentido == 2) {
+            sentido = !sentido; // Inverte o sentido
+            countSentido = 0;   // Reseta o contador para o próximo ciclo
         }
     }
+
+    // Após completar todas as rotações, grava a posição e o sentido na EEPROM
     limparEEPROM();
     gravarPosicaoEEPROM(Servo1.read()); // Grava a posição atual do servo
+    gravarSentido(sentido);
+  	gravarCountSentido(countSentido);
 }
 
 void cronometro(int hora, int min, int sec) {
